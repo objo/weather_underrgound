@@ -33,20 +33,23 @@ class WelcomeController < ApplicationController
          location = Location.create(city: params[:city], state: params[:state], response: results)
 
       end
+
+      parsed_response = JSON.parse(location.response)
+
       # if no error is returned from the call, we fill our instants variables with the result of the call
-      if location.results['response']['error'] == nil || location.results['error'] ==""
-  	    @location = location.results['location']['city']
-  	    @temp_f = location.results['current_observation']['temp_f']
-  	    @temp_c = location.results['current_observation']['temp_c']
-        @weather_icon = location.results['current_observation']['icon_url']
-        @weather_bare_icon = location.results['current_observation']['icon']
-  	    @weather_words = location.results['current_observation']['weather']
-        @forecast_link = location.results['current_observation']['forecast_url']
-  	    @real_feel_f = location.results['current_observation']['feelslike_f']
-  	    @real_feel_c = location.results['current_observation']['feelslike_c']
+      if parsed_response['response']['error'] == nil || parsed_response['error'] ==""
+  	    @location = parsed_response['location']['city']
+  	    @temp_f = parsed_response['current_observation']['temp_f']
+  	    @temp_c = parsed_response['current_observation']['temp_c']
+        @weather_icon = parsed_response['current_observation']['icon_url']
+        @weather_bare_icon = parsed_response['current_observation']['icon']
+  	    @weather_words = parsed_response['current_observation']['weather']
+        @forecast_link = parsed_response['current_observation']['forecast_url']
+  	    @real_feel_f = parsed_response['current_observation']['feelslike_f']
+  	    @real_feel_c = parsed_response['current_observation']['feelslike_c']
   	 else
        # if there is an error, we report it to our user via the @error variable
-  	   @error = location.results['response']['error']['description']
+  	   @error = parsed_response['response']['error']['description']
      end
    end
  end
